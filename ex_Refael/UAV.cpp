@@ -2,10 +2,9 @@
 
 UAV::UAV(State initState, float initX, float initY, float initZ, float initAzimuth)
 {
-	float max = 10000000;
 	state = initState;
 	location = Point3d(initX, initY, initZ);
-	destination = Point3d(max, max, max);
+	destination = Point3d();
 	azimuth = initAzimuth;
 }
 
