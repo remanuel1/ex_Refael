@@ -61,23 +61,20 @@ void updateLocation(float time, float speed ,UAV* uav, float radius)
         //Advance the UAV to be in a circle around the destination
         if (uav->getState() == State::RADIUS)
         {
-            float deltaX = uav->getLocation().getX() - uav->getDestination().getX();
-            float deltaY = uav->getLocation().getY() - uav->getDestination().getY();
-            float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
             float new_x, new_y;
             float angle_radians = uav->getAzimuth() * M_PI / 180.0;
-            if (distance > radius)
+            float distance = speed * time;
+            new_x = uav->getLocation().getX() + distance * cos(angle_radians);
+            new_y = uav->getLocation().getY() + distance * sin(angle_radians);
+
+            float deltaX = new_x - uav->getDestination().getX();
+            float deltaY = new_y - uav->getDestination().getY();
+            distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (distance >= radius)
             {
                 uav->setState(State::REST);
-                distance = radius;
-                new_x = uav->getDestination().getX() + distance * cos(angle_radians);
-                new_y = uav->getDestination().getY() + distance * sin(angle_radians);
-            }
-            else
-            {
-                distance = speed * time;
-                new_x = uav->getLocation().getX() + distance * cos(angle_radians);
-                new_y = uav->getLocation().getY() + distance * sin(angle_radians);
+                new_x = uav->getDestination().getX() + radius * cos(angle_radians);
+                new_y = uav->getDestination().getY() + radius * sin(angle_radians);
             }
             
             uav->setLocation(new_x, new_y, uav->getLocation().getZ());
